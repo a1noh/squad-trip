@@ -271,20 +271,63 @@ footer span{color:var(--claude)}
 <body>
 <script>
 (function(){
-  // Expires midnight EST, April 28 2026 (end of April 27)
-  var expire = new Date('2026-04-28T04:00:00Z'); // midnight EST = 4am UTC
+  var expire = new Date('2026-04-28T04:00:00Z');
   if(new Date() > expire){
-    document.title = 'Expired';
+    document.title = '💀 EXPIRED';
     document.body.innerHTML = '';
-    document.body.style.cssText = 'background:#0C0B0A;color:#E8E4DF;font-family:DM Sans,sans-serif;display:flex;justify-content:center;align-items:center;min-height:100vh;text-align:center;flex-direction:column;padding:40px';
-    document.body.innerHTML = '<div style="max-width:400px"><p style="font-size:48px;margin-bottom:16px">✦</p><h1 style="font-family:Playfair Display,serif;font-size:36px;margin-bottom:16px;color:#D97757">This presentation has expired.</h1><p style="color:#9B948C;font-size:15px;line-height:1.7">It was live for one night only. Just like our Poconos trip proposal — gone but not forgotten.</p><p style="margin-top:24px;font-family:Caveat,cursive;font-size:20px;color:#5C5650">"Aite claude it\'s time to cook" — Austin, 2026</p></div>';
+    document.head.innerHTML += '<style>@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=JetBrains+Mono:wght@700&family=Caveat:wght@700&display=swap");@keyframes glitch{0%{transform:translate(0)}20%{transform:translate(-3px,3px)}40%{transform:translate(3px,-3px)}60%{transform:translate(-2px,-2px)}80%{transform:translate(2px,2px)}100%{transform:translate(0)}}@keyframes flicker{0%,100%{opacity:1}50%{opacity:0.8}75%{opacity:0.6}}@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}@keyframes scan{0%{top:-100%}100%{top:100%}}.glitch{animation:glitch 0.3s infinite}.flicker{animation:flicker 2s infinite}</style>';
+    document.body.style.cssText = 'background:#0C0B0A;color:#E8E4DF;font-family:DM Sans,sans-serif;display:flex;justify-content:center;align-items:center;min-height:100vh;text-align:center;flex-direction:column;padding:40px;overflow:hidden;position:relative';
+    document.body.innerHTML = '<div style="position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(217,119,87,0.03) 2px,rgba(217,119,87,0.03) 4px);pointer-events:none;z-index:1"></div><div style="position:fixed;top:0;left:0;right:0;height:200%;background:linear-gradient(transparent 50%,rgba(217,119,87,0.04) 50%);animation:scan 4s linear infinite;pointer-events:none;z-index:2"></div><div style="position:relative;z-index:3;max-width:700px"><p style="font-size:120px;margin-bottom:0;line-height:1" class="glitch">💀</p><h1 style="font-family:Playfair Display,serif;font-size:clamp(48px,10vw,96px);font-weight:900;color:#D97757;margin:16px 0;line-height:1.05;text-transform:uppercase;letter-spacing:-2px" class="flicker">SELF-<br>DESTRUCTED</h1><div style="width:80px;height:4px;background:#D97757;margin:24px auto;border-radius:2px"></div><p style="font-family:JetBrains Mono,monospace;font-size:clamp(12px,2vw,16px);color:#5C5650;letter-spacing:4px;margin:20px 0">APRIL 27, 2026 — 11:59:59 PM EST</p><p style="font-size:18px;color:#9B948C;line-height:1.7;max-width:460px;margin:0 auto">This presentation was live for one night only.<br>14 archetypes. 1 rejected destination. Gone forever.</p><div style="margin-top:40px;padding:20px 32px;background:rgba(217,119,87,0.08);border:1px solid rgba(217,119,87,0.2);border-radius:12px;display:inline-block"><p style="font-family:JetBrains Mono,monospace;font-size:13px;color:#D97757;letter-spacing:1px">STATUS: TERMINATED</p></div><p style="margin-top:40px;font-family:Caveat,cursive;font-size:28px;color:#5C5650">"Aite claude it\'s time to cook"</p><p style="font-family:JetBrains Mono,monospace;font-size:11px;color:#33302C;margin-top:8px">— Austin, 2026 × Claude AI</p></div>';
     throw new Error('expired');
   }
 })();
 </script>
 
+<!-- COUNTDOWN SPLASH -->
+<section id="splash" style="
+  min-height:100vh;display:flex;flex-direction:column;
+  justify-content:center;align-items:center;text-align:center;
+  background:#0C0B0A;position:relative;overflow:hidden;
+  border-bottom:1px solid var(--border);
+">
+  <div style="position:absolute;inset:0;background:radial-gradient(circle at 50% 50%,rgba(217,119,87,0.06) 0%,transparent 60%)"></div>
+  <div style="position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(217,119,87,0.015) 2px,rgba(217,119,87,0.015) 4px);pointer-events:none"></div>
+  <div style="position:relative;z-index:1">
+    <p style="font-size:14px;font-family:'JetBrains Mono',monospace;color:#5C5650;letter-spacing:4px;margin-bottom:24px">THIS PAGE WILL SELF-DESTRUCT</p>
+    <div id="big-timer" style="
+      font-family:'JetBrains Mono',monospace;
+      font-size:clamp(48px,12vw,120px);font-weight:700;
+      color:var(--claude);letter-spacing:4px;
+      line-height:1;margin-bottom:24px;
+      text-shadow:0 0 40px rgba(217,119,87,0.3),0 0 80px rgba(217,119,87,0.1);
+    "></div>
+    <p style="font-size:clamp(11px,2vw,14px);font-family:'JetBrains Mono',monospace;color:#33302C;letter-spacing:2px;margin-bottom:40px">HOURS &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MINUTES &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SECONDS</p>
+    <div style="width:60px;height:2px;background:var(--claude);margin:0 auto 32px;opacity:0.4"></div>
+    <p style="font-family:'Playfair Display',serif;font-size:clamp(20px,3vw,28px);color:var(--ink);font-style:italic;margin-bottom:8px">The Squad Trip Masterplan</p>
+    <p style="font-size:14px;color:#5C5650">14 archetypes. 1 rejected destination. Limited time viewing.</p>
+  </div>
+  <p style="position:absolute;bottom:30px;font-family:'Caveat',cursive;font-size:18px;color:#33302C;animation:bob 2.5s infinite">↓ scroll down ↓</p>
+</section>
+<script>
+(function(){
+  var expire = new Date('2026-04-28T04:00:00Z');
+  var el = document.getElementById('big-timer');
+  function tick(){
+    var now = new Date();
+    var diff = expire - now;
+    if(diff <= 0){ el.textContent = '00 : 00 : 00'; el.style.color='#5C5650'; return; }
+    var h = String(Math.floor(diff/3600000)).padStart(2,'0');
+    var m = String(Math.floor((diff%3600000)/60000)).padStart(2,'0');
+    var s = String(Math.floor((diff%60000)/1000)).padStart(2,'0');
+    el.textContent = h + ' : ' + m + ' : ' + s;
+    requestAnimationFrame(tick);
+  }
+  tick();
+})();
+</script>
+
 <!-- HERO -->
-<section class="hero">
+<section class="hero" id="main-hero">
   <div class="badge"><span class="dot"></span>Powered by Claude</div>
   <h1 style="font-family:'Playfair Display',serif;font-size:clamp(52px,9vw,110px);font-weight:400;line-height:1.05;margin-bottom:20px">The Squad<br><em style="font-style:italic;color:var(--claude)">Trip</em></h1>
   <p class="hsub">14명. 14 archetypes. 1 AI-planned destination. 0 boring PowerPoints.</p>
@@ -295,8 +338,9 @@ footer span{color:var(--claude)}
 <div class="award">
   <p>🏆 WINNER: <span>BEST PRESENTATION AWARD</span> (the only meaningless award) 🏆</p>
   <p style="margin-top:4px;font-size:11px;color:var(--ink-dim)">Nobody voted for our destination. Sending this as reference only. You're welcome.</p>
-  <p id="countdown" style="margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--claude)"></p>
+  <p id="countdown" style="margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:15px;color:var(--claude);letter-spacing:1px;animation:flicker 3s infinite"></p>
 </div>
+<style>@keyframes flicker{0%,100%{opacity:1}50%{opacity:0.7}}</style>
 <script>
 (function(){
   var expire = new Date('2026-04-28T04:00:00Z');
@@ -308,7 +352,7 @@ footer span{color:var(--claude)}
     var h = Math.floor(diff/3600000);
     var m = Math.floor((diff%3600000)/60000);
     var s = Math.floor((diff%60000)/1000);
-    el.textContent = '\u23F3 This page self-destructs in ' + h + 'h ' + m + 'm ' + s + 's';
+    el.textContent = '\uD83D\uDCA3 SELF-DESTRUCT IN ' + h + 'h ' + m + 'm ' + s + 's';
     requestAnimationFrame(tick);
   }
   tick();
