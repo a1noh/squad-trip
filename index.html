@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Squad Trip — Powered by Claude</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,400&family=JetBrains+Mono:wght@400;500;700&family=Caveat:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --claude:#D97757;--claude-light:rgba(217,119,87,0.15);--claude-dark:#B85C3A;
+  --bg:#0C0B0A;--bg-card:#161514;--bg-raised:#1C1B19;
+  --ink:#E8E4DF;--ink-mid:#9B948C;--ink-dim:#5C5650;
+  --border:#2A2723;--border-light:#33302C;
+  --green:#4A9B7F;--blue:#5B8EC9;--purple:#8B6EC0;
+  --gold:#C4993C;--rose:#C46B82;
+  --shadow:0 1px 3px rgba(0,0,0,0.2),0 4px 12px rgba(0,0,0,0.15);
+  --shadow-lg:0 2px 6px rgba(0,0,0,0.2),0 8px 24px rgba(0,0,0,0.25);
+  --r:16px;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:'DM Sans',sans-serif;font-size:16px;line-height:1.7;overflow-x:hidden}
+body::after{
+  content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;opacity:0.02;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+section{padding:100px 60px;position:relative}
+@media(max-width:768px){section{padding:60px 20px}}
+
+.tag-line{
+  display:inline-flex;align-items:center;gap:6px;
+  font-family:'JetBrains Mono',monospace;font-size:12px;
+  color:var(--claude);letter-spacing:1px;margin-bottom:12px;
+}
+.tag-line::before{content:'✦';font-size:10px}
+.title{
+  font-family:'Playfair Display',serif;font-size:clamp(32px,5vw,56px);
+  font-weight:400;line-height:1.15;margin-bottom:32px;
+}
+.title em{font-style:italic;color:var(--claude)}
+.sub{font-size:17px;color:var(--ink-mid);max-width:600px;margin-bottom:40px}
+
+/* ── HERO ── */
+.hero{
+  min-height:100vh;display:flex;flex-direction:column;
+  justify-content:center;align-items:center;text-align:center;
+  background:radial-gradient(ellipse at 50% 40%,rgba(217,119,87,0.06) 0%,var(--bg) 70%);
+}
+.badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:100px;padding:8px 20px 8px 14px;
+  font-size:13px;color:var(--ink-mid);margin-bottom:32px;
+  box-shadow:var(--shadow);animation:fadeD 0.8s 0.2s both;
+}
+.badge .dot{width:8px;height:8px;border-radius:50%;background:var(--claude);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+.hero h1{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(52px,9vw,110px);font-weight:400;line-height:1.05;
+  margin-bottom:20px;animation:fadeD 0.8s 0.4s both;
+}
+.hero h1 em{font-style:italic;color:var(--claude)}
+.hero .hsub{font-size:17px;color:var(--ink-mid);max-width:480px;animation:fadeD 0.8s 0.6s both}
+.hero .scroll{
+  position:absolute;bottom:40px;font-family:'Caveat',cursive;
+  font-size:18px;color:var(--ink-dim);animation:bob 2.5s infinite;
+}
+@keyframes fadeD{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
+
+/* ── AWARD BANNER ── */
+.award{
+  text-align:center;padding:20px;
+  background:var(--bg-card);border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+}
+.award p{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink-dim);letter-spacing:1px}
+.award span{color:var(--claude)}
+
+/* ── CARDS ── */
+.card{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--r);padding:28px 32px;
+  box-shadow:var(--shadow);transition:box-shadow 0.3s;
+}
+.card:hover{box-shadow:var(--shadow-lg)}
+
+/* ── PROCESS ── */
+.plist{display:flex;flex-direction:column;gap:20px;max-width:820px}
+.pc .ph{display:flex;align-items:center;gap:14px;margin-bottom:12px}
+.pc .pn{
+  width:32px;height:32px;border-radius:50%;background:var(--claude-light);
+  color:var(--claude);font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.pc h3{font-family:'Playfair Display',serif;font-size:20px;font-weight:400}
+.pc ul{font-size:15px;color:var(--ink-mid);padding-left:4px;list-style:none}
+.pc ul li{position:relative;padding-left:18px;margin-bottom:4px}
+.pc ul li::before{content:'→';position:absolute;left:0;color:var(--claude);font-size:13px}
+.pc .plabel{
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  letter-spacing:1.5px;color:var(--claude);text-transform:uppercase;
+  margin-top:14px;margin-bottom:6px;
+}
+.pc .prompt{
+  background:var(--bg);border:1px solid var(--border);border-radius:10px;
+  padding:14px 18px;margin-top:4px;
+  font-family:'JetBrains Mono',monospace;font-size:13px;
+  color:var(--ink-mid);white-space:pre-wrap;word-break:break-word;line-height:1.7;
+}
+
+/* ── ARCHETYPE GRID ── */
+.agrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+.ac{position:relative;overflow:hidden;padding:28px 24px}
+.ac .cdot{width:10px;height:10px;border-radius:50%;position:absolute;top:24px;right:24px}
+.ac .icon{font-size:32px;margin-bottom:8px;display:block}
+.ac .name{font-family:'Playfair Display',serif;font-size:26px;font-weight:400;margin-bottom:2px}
+.ac .alabel{
+  display:inline-block;padding:4px 12px;margin-bottom:14px;
+  background:var(--claude-light);border-radius:100px;
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  letter-spacing:1px;color:var(--claude);
+}
+.ac .tags{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:12px}
+.ac .tag{
+  font-size:11px;padding:4px 10px;border-radius:100px;
+  background:var(--bg);border:1px solid var(--border);color:var(--ink-dim);
+}
+.ac .desc{font-size:14px;color:var(--ink-mid);line-height:1.7}
+.ac .mbti{
+  font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ink-dim);
+  margin-top:12px;background:var(--bg);display:inline-block;padding:2px 10px;border-radius:100px;
+}
+
+/* dot colors */
+.d1{background:var(--claude)}.d2{background:var(--blue)}.d3{background:var(--green)}
+.d4{background:var(--gold)}.d5{background:var(--purple)}.d6{background:var(--rose)}
+.d7{background:#E88CA5}.d8{background:#D4A0B0}.d9{background:#7BB5D1}
+.d10{background:#7A8B8C}.d11{background:#5BA88C}.d12{background:#D4825E}
+.d13{background:#A594D0}.d14{background:#C9A84C}
+
+/* ── QUOTE BLOCK ── */
+.quote-block{
+  margin:32px 0;padding:32px 36px;
+  background:var(--bg-card);border-left:4px solid var(--claude);
+  border-radius:0 var(--r) var(--r) 0;
+  box-shadow:var(--shadow);
+}
+.quote-block .qt{
+  font-family:'Playfair Display',serif;font-size:22px;font-style:italic;
+  line-height:1.6;margin-bottom:12px;
+}
+.quote-block .qt span{color:var(--claude)}
+.quote-block .qa{font-size:13px;color:var(--ink-dim)}
+.quote-block .qn{font-size:12px;color:var(--ink-dim);margin-top:8px;font-style:italic}
+
+/* ── STATS ── */
+.stats{display:flex;flex-wrap:wrap;gap:12px;margin:28px 0}
+.stat{
+  background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r);
+  padding:18px 24px;text-align:center;flex:1;min-width:120px;box-shadow:var(--shadow);
+}
+.stat .num{font-family:'Playfair Display',serif;font-size:36px;color:var(--claude)}
+.stat .label{font-size:11px;color:var(--ink-dim);margin-top:2px}
+
+/* ── ANALYSIS ── */
+.ab{
+  background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r);
+  padding:32px;margin-bottom:20px;box-shadow:var(--shadow);
+}
+.ab h3{font-family:'Playfair Display',serif;font-size:22px;font-weight:400;margin-bottom:14px}
+.ab ul{font-size:15px;color:var(--ink-mid);padding-left:4px;list-style:none}
+.ab ul li{position:relative;padding-left:18px;margin-bottom:5px}
+.ab ul li::before{content:'✦';position:absolute;left:0;color:var(--claude);font-size:9px;top:4px}
+
+.spg{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.sp{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px;box-shadow:var(--shadow)}
+.sp h4{font-family:'Playfair Display',serif;font-size:17px;font-weight:400;margin-bottom:8px}
+.sp ul{font-size:13px;color:var(--ink-mid);padding-left:4px;list-style:none}
+.sp ul li{position:relative;padding-left:16px;margin-bottom:3px}
+.sp ul li::before{content:'→';position:absolute;left:0;color:var(--claude);font-size:11px}
+
+/* ── REVEAL ── */
+.reveal{
+  text-align:center;
+  background:linear-gradient(180deg,var(--bg-card) 0%,var(--bg) 100%);
+  border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+}
+.reveal .place{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(60px,12vw,130px);font-weight:400;font-style:italic;
+  line-height:1;margin:20px 0;
+  background:linear-gradient(135deg,var(--claude),var(--gold));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.reveal .tagline{font-size:17px;color:var(--ink-mid);max-width:600px;margin:0 auto;line-height:1.7}
+
+.photos{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:12px;margin-top:40px;max-width:880px;margin-left:auto;margin-right:auto;
+}
+.photo{position:relative;aspect-ratio:16/10;overflow:hidden;border-radius:12px;background:var(--bg-raised)}
+.photo img{width:100%;height:100%;object-fit:cover;display:block;opacity:0.85}
+.photo .cap{
+  position:absolute;bottom:0;left:0;right:0;padding:20px 16px 12px;
+  background:linear-gradient(transparent,rgba(0,0,0,0.7));
+  font-family:'Caveat',cursive;font-size:18px;color:#fff;
+}
+
+/* ── TRADEOFF ── */
+.tradeoff{
+  display:grid;grid-template-columns:1fr 1fr;gap:0;
+  margin:32px auto;max-width:780px;
+  border:1px solid var(--border);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);
+}
+.tradeoff .ch{
+  padding:16px 20px;font-family:'JetBrains Mono',monospace;
+  font-size:12px;letter-spacing:1px;text-align:center;font-weight:500;
+}
+.tradeoff .ch.ocean{background:rgba(217,119,87,0.12);color:var(--claude)}
+.tradeoff .ch.lake{background:rgba(74,155,127,0.12);color:var(--green)}
+.tradeoff .cell{
+  padding:14px 20px;font-size:14px;color:var(--ink-mid);
+  border-top:1px solid var(--border);background:var(--bg-card);
+}
+.tradeoff .cell:nth-child(odd){border-right:1px solid var(--border)}
+.tradeoff .cell .lb{
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  color:var(--ink);letter-spacing:0.5px;display:block;margin-bottom:3px;font-weight:500;
+}
+.tradeoff .cell.bad{background:rgba(217,119,87,0.04)}
+.tradeoff .cell.good{background:rgba(74,155,127,0.04)}
+.tradeoff .cell.ok{background:rgba(196,153,60,0.04)}
+
+.choco{
+  text-align:center;margin:40px auto;max-width:660px;
+  padding:40px;background:var(--bg-card);
+  border:2px solid var(--claude);border-radius:var(--r);
+  box-shadow:var(--shadow-lg);position:relative;
+}
+.choco::before{
+  content:'✦ CORE MEMORY ✦';position:absolute;top:-12px;left:50%;transform:translateX(-50%);
+  background:var(--bg);padding:0 16px;
+  font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:3px;color:var(--claude);
+}
+.choco h3{font-family:'Playfair Display',serif;font-size:28px;font-weight:400;margin:12px 0}
+.choco p{font-size:14px;color:var(--ink-mid);max-width:460px;margin:0 auto}
+.choco img{width:100%;max-height:260px;object-fit:cover;margin-top:20px;border-radius:10px}
+
+.reasons{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:32px}
+.rc{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r);padding:24px;box-shadow:var(--shadow)}
+.rc .ri{font-size:24px;margin-bottom:8px}
+.rc h4{font-family:'Playfair Display',serif;font-size:17px;font-weight:400;margin-bottom:6px}
+.rc p{font-size:14px;color:var(--ink-mid);line-height:1.7}
+.rc .pt{
+  display:inline-block;font-size:10px;padding:2px 8px;margin:2px;
+  background:var(--bg);border:1px solid var(--border);border-radius:100px;color:var(--ink-dim);
+}
+
+.closing{
+  display:flex;flex-direction:column;justify-content:center;align-items:center;
+  text-align:center;min-height:60vh;
+}
+footer{
+  text-align:center;padding:40px;border-top:1px solid var(--border);font-size:12px;color:var(--ink-dim);
+}
+footer span{color:var(--claude)}
+</style>
+</head>
+<body>
+<script>
+(function(){
+  // Expires midnight EST, April 28 2026 (end of April 27)
+  var expire = new Date('2026-04-28T04:00:00Z'); // midnight EST = 4am UTC
+  if(new Date() > expire){
+    document.title = 'Expired';
+    document.body.innerHTML = '';
+    document.body.style.cssText = 'background:#0C0B0A;color:#E8E4DF;font-family:DM Sans,sans-serif;display:flex;justify-content:center;align-items:center;min-height:100vh;text-align:center;flex-direction:column;padding:40px';
+    document.body.innerHTML = '<div style="max-width:400px"><p style="font-size:48px;margin-bottom:16px">✦</p><h1 style="font-family:Playfair Display,serif;font-size:36px;margin-bottom:16px;color:#D97757">This presentation has expired.</h1><p style="color:#9B948C;font-size:15px;line-height:1.7">It was live for one night only. Just like our Poconos trip proposal — gone but not forgotten.</p><p style="margin-top:24px;font-family:Caveat,cursive;font-size:20px;color:#5C5650">"Aite claude it\'s time to cook" — Austin, 2026</p></div>';
+    throw new Error('expired');
+  }
+})();
+</script>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="badge"><span class="dot"></span>Powered by Claude</div>
+  <h1 style="font-family:'Playfair Display',serif;font-size:clamp(52px,9vw,110px);font-weight:400;line-height:1.05;margin-bottom:20px">The Squad<br><em style="font-style:italic;color:var(--claude)">Trip</em></h1>
+  <p class="hsub">14명. 14 archetypes. 1 AI-planned destination. 0 boring PowerPoints.</p>
+  <div class="scroll">↓ scroll to begin ↓</div>
+</section>
+
+<!-- AWARD BANNER -->
+<div class="award">
+  <p>🏆 WINNER: <span>BEST PRESENTATION AWARD</span> (the only meaningless award) 🏆</p>
+  <p style="margin-top:4px;font-size:11px;color:var(--ink-dim)">Nobody voted for our destination. Sending this as reference only. You're welcome.</p>
+  <p id="countdown" style="margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--claude)"></p>
+</div>
+<script>
+(function(){
+  var expire = new Date('2026-04-28T04:00:00Z');
+  var el = document.getElementById('countdown');
+  function tick(){
+    var now = new Date();
+    var diff = expire - now;
+    if(diff <= 0){ el.textContent = 'THIS PAGE HAS EXPIRED'; return; }
+    var h = Math.floor(diff/3600000);
+    var m = Math.floor((diff%3600000)/60000);
+    var s = Math.floor((diff%60000)/1000);
+    el.textContent = '\u23F3 This page self-destructs in ' + h + 'h ' + m + 'm ' + s + 's';
+    requestAnimationFrame(tick);
+  }
+  tick();
+})();
+</script>
+
+<!-- PROCESS -->
+<section>
+  <div class="tag-line">PROCESS</div>
+  <h2 class="title">How <em>Claude</em> cooked this</h2>
+  <p class="sub">Austin fed raw personality data into Claude. Here's every prompt and step.</p>
+
+  <div class="plist">
+    <div class="card pc"><div class="ph"><div class="pn">01</div><h3>The Prompt</h3></div>
+      <ul><li>Archetypes → trip planning → presentation — one ask</li><li>No PowerPoint — HTML only</li><li>Show the thought process in the output</li></ul>
+      <div class="plabel">Austin's Prompt</div>
+      <div class="prompt">"Aite claude it's time to cook
+
+I'm gna give you personality traits of my friends. What you are gna do is create archetypes for each of these people. and document for each people.
+
+Then after consolidating all these data - we are going to plan a trip to somewhere. (preferably close but use your reasoning to convince these guys).
+
+Use the data to choose a place and give a reasoning why we should go there.
+
+We are doing a presentation on this but I want to create either a MD file or html style instead of boring power point.
+
+Mention this thought process during the presentation."</div>
+    </div>
+
+    <div class="card pc"><div class="ph"><div class="pn">02</div><h3>Raw Data Drop</h3></div>
+      <ul><li>Person by person — raw bullets, no filter</li><li>Mixed Korean + English (무심, 세심, 테토남)</li><li>Group dynamics, not just individual traits</li></ul>
+      <div class="plabel">Examples</div>
+      <div class="prompt">"Andrew - is the 테토남 of the group... very wholesome... fight with girlfriend a lot but they will get married soon"
+
+"Joan - she definitely has anxiety when new member joins the group she forgets to breathe and she becomes pale"
+
+"Steve - this guy loves jpop as much as i love bjj... has fond memories in jsq... always fascist in secret hitler maybe it's his true colors"</div>
+    </div>
+
+    <div class="card pc"><div class="ph"><div class="pn">03</div><h3>Context + Self-Intro</h3></div>
+      <ul><li>NYC Korean church community</li><li>Claude already knew Austin from past chats</li></ul>
+      <div class="plabel">Context</div>
+      <div class="prompt">"we are from new york btw we go to church
+* we speak in korean
+we are korean group"</div>
+      <div class="plabel">Austin</div>
+      <div class="prompt">"* you know me already im the main character here
+- im the funny guy with the dog athletic and super sexy type too
+- u already know me so imma just pause here"</div>
+    </div>
+
+    <div class="card pc"><div class="ph"><div class="pn">04</div><h3>Iterate & Correct</h3></div>
+      <ul><li>Caught missing MBTIs, clarified names</li><li>Requested bullet points over paragraphs</li><li>Not one-shot magic — back-and-forth</li></ul>
+      <div class="plabel">Corrections</div>
+      <div class="prompt">"me changjin andrew are intjs"
+"oh that is JJ"
+"can you put bullet points - that's just me personally im bad with sentences"</div>
+    </div>
+
+    <div class="card pc"><div class="ph"><div class="pn">05</div><h3>What Claude Built</h3></div>
+      <ul><li>Analyzed 14 profiles → generated archetypes</li><li>Mapped energy spectrum + group roles</li><li>Scored destinations against group needs</li><li>Built this presentation — zero templates</li><li>Total time: ~15 minutes of prompting</li></ul>
+    </div>
+  </div>
+</section>
+
+<!-- ARCHETYPES -->
+<section>
+  <div class="tag-line">ARCHETYPES</div>
+  <h2 class="title">Know Your <em>Archetype</em></h2>
+  <p class="sub">Each person got an archetype based on their traits and group role.</p>
+
+  <div class="agrid">
+    <div class="card ac"><div class="cdot d1"></div><span class="icon">🔥</span><div class="name">Austin</div><div class="alabel">THE MAIN CHARACTER</div>
+      <div class="tags"><span class="tag">Athletic</span><span class="tag">BJJ / Muay Thai / Judo</span><span class="tag">Dog Dad (Choco 🐶)</span><span class="tag">Funny</span><span class="tag">Ramen Connoisseur</span></div>
+      <p class="desc">The protagonist energy is undeniable. Trains combat sports, brings the dog everyone loves, drops jokes that land, and orchestrated this entire trip using AI. If Austin's going, everyone's going.</p><div class="mbti">INTJ</div></div>
+
+    <div class="card ac"><div class="cdot d2"></div><span class="icon">🧸</span><div class="name">Andrew</div><div class="alabel">THE 테토남 TANK</div>
+      <div class="tags"><span class="tag">Wholesome</span><span class="tag">Charismatic</span><span class="tag">Stage Presence</span><span class="tag">Swole</span><span class="tag">무심 > 세심</span><span class="tag">Hidden Goofy</span></div>
+      <p class="desc">Built like a tank with the heart of a teddy bear. Charismatic on stage, careless in the DMs (hence the fights — but they're endgame). The goofy side when his guard drops? That's the real Andrew.</p><div class="mbti">INTJ</div></div>
+
+    <div class="card ac"><div class="cdot d3"></div><span class="icon">👨‍👧‍👦</span><div class="name">JJ (Changjin)</div><div class="alabel">THE GROUP DAD</div>
+      <div class="tags"><span class="tag">Caring</span><span class="tag">무심 Type</span><span class="tag">Balance Games King</span><span class="tag">ADHD Energy</span><span class="tag">Creative 멘트</span><span class="tag">Protector</span></div>
+      <p class="desc">The dad friend who doesn't know he's the dad friend. Looks out for Austin, looks out for Joan — it's just what he does. Will ask you a deep question then roast someone mid-answer. When the one-liners land, they LAND.</p><div class="mbti">INTJ</div></div>
+
+    <div class="card ac"><div class="cdot d4"></div><span class="icon">🐕</span><div class="name">Yosub</div><div class="alabel">THE GOLDEN RETRIEVER</div>
+      <div class="tags"><span class="tag">ENFP</span><span class="tag">Sensitive</span><span class="tag">FOMO King</span><span class="tag">Warm</span><span class="tag">Lowkey Genius</span><span class="tag">One of the Most Caring</span></div>
+      <p class="desc">If the group chat pops off without him, he's already typing "wait what happened." Wicked smart in that offbeat way, warm to everyone, down for anything. Actually one of the most caring people in the group — he just shows it differently.</p><div class="mbti">ENFP</div></div>
+
+    <div class="card ac"><div class="cdot d5"></div><span class="icon">🤖</span><div class="name">Dooksan</div><div class="alabel">THE SILENT STRATEGIST</div>
+      <div class="tags"><span class="tag">ISTJ</span><span class="tag">Robot Mode</span><span class="tag">Board Game God</span><span class="tag">Quiet Comedy</span><span class="tag">Natural Athlete</span><span class="tag">English Speaker</span></div>
+      <p class="desc">Processing... *carries the Fascists to victory in Secret Hitler*. Calculating, calm, then drops the funniest one-liner at 20% volume. Natural beast athletically. The quiet engine.</p><div class="mbti">ISTJ</div></div>
+
+    <div class="card ac"><div class="cdot d6"></div><span class="icon">🕺</span><div class="name">Hogyun</div><div class="alabel">THE ABSORBER</div>
+      <div class="tags"><span class="tag">Goofball Troll</span><span class="tag">Dab Enthusiast</span><span class="tag">SWE Nerd (in denial)</span><span class="tag">Austin Superfan</span><span class="tag">Quick Learner</span></div>
+      <p class="desc">"I'm not a nerd bro" — said the man who codes for a living. Troll energy is elite, dabbing is unhinged, Austin fanboy arc is adorable. Will learn any skill in a day and pretend it was nothing.</p></div>
+
+    <div class="card ac"><div class="cdot d7"></div><span class="icon">⚡</span><div class="name">지연 (Jiyeon)</div><div class="alabel">THE GROUP MOM — INFINITE BATTERY</div>
+      <div class="tags"><span class="tag">ESTJ</span><span class="tag">Infinite Cardio</span><span class="tag">Million Friends</span><span class="tag">Cutthroat</span><span class="tag">Wholesome</span><span class="tag">Talkative</span></div>
+      <p class="desc">She will outrun you, out-talk you, out-network you, and then make sure everyone ate dinner. Nurturing mom energy that flips cutthroat in a heartbeat. If the trip needs logistics, she's already on it.</p><div class="mbti">ESTJ</div></div>
+
+    <div class="card ac"><div class="cdot d8"></div><span class="icon">🌸</span><div class="name">경은 (Kyungeun)</div><div class="alabel">THE GENTLE WILDCARD</div>
+      <div class="tags"><span class="tag">ENFP</span><span class="tag">Infectious Laugh</span><span class="tag">Kind & Sweet</span><span class="tag">Cutthroat (per Dooksan)</span><span class="tag">Recovering</span></div>
+      <p class="desc">Sweet on the surface, lethal underneath (Dooksan's review: "cutthroat to some guys"). The laugh makes everyone else laugh. Been MIA due to health — this trip is the comeback arc.</p><div class="mbti">ENFP</div></div>
+
+    <div class="card ac"><div class="cdot d9"></div><span class="icon">🫧</span><div class="name">Joan</div><div class="alabel">THE QUIET GUARDIAN</div>
+      <div class="tags"><span class="tag">ISFJ</span><span class="tag">Caring</span><span class="tag">Social Awareness</span><span class="tag">Anxiety w/ New People</span><span class="tag">Small Group Energy</span><span class="tag">Dog Lover (Choco!)</span></div>
+      <p class="desc">Notices when someone's left out and quietly pulls them back in. New people = pale face, no oxygen, exit strategy. In her comfort zone? Impeccable social radar. Will be on the floor with Choco the entire trip.</p><div class="mbti">ISFJ</div></div>
+
+    <div class="card ac"><div class="cdot d10"></div><span class="icon">🎵</span><div class="name">Steve</div><div class="alabel">THE SILENT FASCIST</div>
+      <div class="tags"><span class="tag">ISTJ</span><span class="tag">Robot Mode</span><span class="tag">JPOP Fanatic</span><span class="tag">JSQ Memories</span><span class="tag">Loves New Jersey</span><span class="tag">Snack King</span><span class="tag">Always Fascist</span></div>
+      <p class="desc">The quietest person in any room. Loves JPOP as much as Austin loves BJJ — it's that deep. Has fond memories in JSQ in various ways. Loves New Jersey. Always fascist in Secret Hitler — maybe it's his true colors. Also brings the best snacks every single time.</p><div class="mbti">ISTJ</div></div>
+
+    <div class="card ac"><div class="cdot d11"></div><span class="icon">🌿</span><div class="name">Suko</div><div class="alabel">THE THOUGHTFUL FLANKER</div>
+      <div class="tags"><span class="tag">Strategic</span><span class="tag">Animal Lover</span><span class="tag">Long Walk Energy</span><span class="tag">Supportive</span><span class="tag">Social Awareness</span><span class="tag">Banter King</span></div>
+      <p class="desc">The unsung MVP. Strategic mind, great social awareness, loves banter. Gets left out sometimes — not because anyone means to, the group's just chaotic. This trip: Suko's in every round.</p></div>
+
+    <div class="card ac"><div class="cdot d12"></div><span class="icon">🎤</span><div class="name">Hajin</div><div class="alabel">THE QUIET CHARMER</div>
+      <div class="tags"><span class="tag">Charismatic</span><span class="tag">Quietly Funny</span><span class="tag">Warm</span><span class="tag">Supportive</span><span class="tag">Many Friends</span><span class="tag">JJ's Nemesis</span><span class="tag">Engaged to Gary</span></div>
+      <p class="desc">Just got engaged to Gary — congrats! Charismatic in that understated way — doesn't need to be loud to command a room. Quietly funny, warm-hearted, supportive. JJ hates her for some reason and nobody knows why. Has many friends but they're all taken so no 소개팅 help for Austin.</p></div>
+
+    <div class="card ac"><div class="cdot d13"></div><span class="icon">💬</span><div class="name">Suhrin</div><div class="alabel">THE ARTICULATE VANISHER</div>
+      <div class="tags"><span class="tag">Talkative</span><span class="tag">Articulate</span><span class="tag">Gossip Partner</span><span class="tag">소개팅 Approver</span><span class="tag">Supportive</span><span class="tag">Disappears on Trips</span></div>
+      <p class="desc">Says she's bad at Korean AND English — is actually the most articulate person in the room. Disappears mid-trip to fight with her boyfriend then comes back like nothing happened. Gossip partner with 지연. Approved Austin's 소개팅 simulation which makes her elite.</p></div>
+
+    <div class="card ac"><div class="cdot d14"></div><span class="icon">🏈</span><div class="name">Gary</div><div class="alabel">THE CONTRARIAN GENIUS</div>
+      <div class="tags"><span class="tag">Ex-McKinsey</span><span class="tag">Michigan Fanatic</span><span class="tag">Runner</span><span class="tag">Nasty Shot King</span><span class="tag">Contrarian</span><span class="tag">Engaged to Hajin</span></div>
+      <p class="desc">Just got engaged to Hajin. Ex-McKinsey consultant so he'll tell you why your idea is wrong with a 2x2 framework. Loves Michigan way too much. Orders the nastiest shots. Always disagrees first, then agrees later. Thinks he's a genius but honestly he probably is. Will try to organize a morning run nobody asked for.</p></div>
+  </div>
+
+  <!-- JJ QUOTE -->
+  <div class="quote-block">
+    <div class="qt">"Do you have a lot of <span>상처</span>?"<br>"I don't get 상처. I <span>give</span> 상처."</div>
+    <div class="qa">— JJ (Changjin), The Group Dad</div>
+    <div class="qn">Translation: he 100% has a lot of 상처.</div>
+  </div>
+</section>
+
+<!-- ANALYSIS -->
+<section>
+  <div class="tag-line">ANALYSIS</div>
+  <h2 class="title">Group <em>DNA</em></h2>
+
+  <div class="stats">
+    <div class="stat"><div class="num">14</div><div class="label">SQUAD</div></div>
+    <div class="stat"><div class="num">3</div><div class="label">INTJs</div></div>
+    <div class="stat"><div class="num">3</div><div class="label">ISTJs</div></div>
+    <div class="stat"><div class="num">2</div><div class="label">ENFPs</div></div>
+    <div class="stat"><div class="num">2</div><div class="label">GROUP PARENTS</div></div>
+  </div>
+
+  <div class="ab"><h3>🔋 Energy Spectrum</h3>
+    <div style="overflow-x:auto;margin-top:16px">
+      <svg viewBox="0 0 820 280" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:820px;display:block;margin:0 auto">
+        <defs><linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:#5B8EC9;stop-opacity:0.08"/><stop offset="50%" style="stop-color:#C4993C;stop-opacity:0.08"/><stop offset="100%" style="stop-color:#D97757;stop-opacity:0.08"/></linearGradient></defs>
+        <rect x="40" y="30" width="740" height="210" rx="12" fill="url(#bg)"/>
+        <text x="40" y="22" fill="#5C5650" font-size="10" font-family="JetBrains Mono,monospace">RECHARGE</text>
+        <text x="710" y="22" fill="#5C5650" font-size="10" font-family="JetBrains Mono,monospace">FULL SEND</text>
+        <line x1="290" y1="34" x2="290" y2="236" stroke="#2A2723" stroke-width="1" stroke-dasharray="4"/>
+        <line x1="510" y1="34" x2="510" y2="236" stroke="#2A2723" stroke-width="1" stroke-dasharray="4"/>
+        <circle cx="90" cy="90" r="18" fill="#7BB5D1" opacity="0.85"/><text x="90" y="94" text-anchor="middle" fill="#0C0B0A" font-size="9" font-weight="700">Joan</text>
+        <circle cx="145" cy="155" r="18" fill="#7A8B8C" opacity="0.85"/><text x="145" y="159" text-anchor="middle" fill="#E8E4DF" font-size="9" font-weight="700">Steve</text>
+        <circle cx="200" cy="115" r="18" fill="#8B6EC0" opacity="0.85"/><text x="200" y="119" text-anchor="middle" fill="#E8E4DF" font-size="9" font-weight="700">Dooksan</text>
+        <circle cx="320" cy="100" r="18" fill="#5BA88C" opacity="0.85"/><text x="320" y="104" text-anchor="middle" fill="#E8E4DF" font-size="9" font-weight="700">Suko</text>
+        <circle cx="370" cy="165" r="18" fill="#D4A0B0" opacity="0.85"/><text x="370" y="169" text-anchor="middle" fill="#0C0B0A" font-size="9" font-weight="700">경은</text>
+        <circle cx="420" cy="115" r="18" fill="#4A9B7F" opacity="0.85"/><text x="420" y="119" text-anchor="middle" fill="#E8E4DF" font-size="9" font-weight="700">JJ</text>
+        <circle cx="470" cy="85" r="18" fill="#D4825E" opacity="0.85"/><text x="470" y="89" text-anchor="middle" fill="#E8E4DF" font-size="9" font-weight="700">Hajin</text>
+        <circle cx="520" cy="145" r="18" fill="#C4993C" opacity="0.85"/><text x="520" y="149" text-anchor="middle" fill="#0C0B0A" font-size="9" font-weight="700">Yosub</text>
+        <circle cx="555" cy="200" r="18" fill="#A594D0" opacity="0.85"/><text x="555" y="204" text-anchor="middle" fill="#0C0B0A" font-size="9" font-weight="700">Suhrin</text>
+        <circle cx="600" cy="200" r="18" fill="#C9A84C" opacity="0.85"/><text x="600" y="204" text-anchor="middle" fill="#0C0B0A" font-size="9" font-weight="700">Gary</text>
+        <circle cx="640" cy="90" r="18" fill="#C46B82" opacity="0.85"/><text x="640" y="94" text-anchor="middle" fill="#E8E4DF" font-size="9" font-weight="700">Hogyun</text>
+        <circle cx="690" cy="155" r="18" fill="#5B8EC9" opacity="0.85"/><text x="690" y="159" text-anchor="middle" fill="#E8E4DF" font-size="9" font-weight="700">Andrew</text>
+        <circle cx="725" cy="90" r="20" fill="#D97757" opacity="0.9"/><text x="725" y="94" text-anchor="middle" fill="#E8E4DF" font-size="9" font-weight="700">Austin</text>
+        <circle cx="760" cy="55" r="20" fill="#E88CA5" opacity="0.9" stroke="#E88CA5" stroke-width="2" stroke-dasharray="3"/><text x="760" y="59" text-anchor="middle" fill="#0C0B0A" font-size="9" font-weight="700">지연</text><text x="760" y="74" text-anchor="middle" fill="#E88CA5" font-size="7" font-family="JetBrains Mono,monospace">∞</text>
+      </svg>
+    </div>
+  </div>
+
+  <div class="ab"><h3>👤 Individual Social Patterns</h3></div>
+  <div class="spg" style="margin-top:-8px">
+    <div class="sp"><h4>🔥 Austin</h4><ul><li>Gravitational center — if he goes, everyone goes</li><li>Choco is a social magnet for the whole group</li><li>JJ looks out for him, Hogyun admires him</li></ul></div>
+    <div class="sp"><h4>🧸 Andrew</h4><ul><li>Selectively close — has an inner circle</li><li>Guard up by default → goofy once it drops</li><li>Needs trusted people nearby to relax</li></ul></div>
+    <div class="sp"><h4>👨‍👧‍👦 JJ</h4><ul><li>Natural caretaker — looks out for Austin, looks out for Joan</li><li>ADHD social style — bounces between convos</li><li>Glue that holds sub-groups together</li></ul></div>
+    <div class="sp"><h4>🐕 Yosub</h4><ul><li>FOMO floater — bounces between every sub-group</li><li>One of the most caring — shows it differently</li><li>Needs to feel included in EVERYTHING</li></ul></div>
+    <div class="sp"><h4>🤖 Dooksan</h4><ul><li>Robot Gang with Steve — same wavelength</li><li>Thrives in structured activities (games > chaos)</li></ul></div>
+    <div class="sp"><h4>🕺 Hogyun</h4><ul><li>Austin superfan — observant, absorbs energy</li><li>Troll presence that raises energy in any room</li></ul></div>
+    <div class="sp"><h4>⚡ 지연</h4><ul><li>Connected to everyone — checks on the group</li><li>Will handle logistics nobody asked her to</li></ul></div>
+    <div class="sp"><h4>🌸 경은</h4><ul><li>Re-entry mode — needs low-pressure reconnection</li><li>Sweet to most, savage to some (Dooksan confirms)</li></ul></div>
+    <div class="sp"><h4>🫧 Joan</h4><ul><li>Can't do 14-person chaos nonstop</li><li>JJ looks out for her, Choco is her comfort anchor</li><li>Quietly pulls in people who are left out</li></ul></div>
+    <div class="sp"><h4>🎵 Steve</h4><ul><li>Quietest member — shows love through snacks</li><li>JPOP obsessed, JSQ memories, loves NJ</li><li>Always fascist in Secret Hitler — sus</li></ul></div>
+    <div class="sp"><h4>🌿 Suko</h4><ul><li>Gets left out — not by choice, group is chaotic</li><li>Thrives in 1-on-1 or structured banter</li><li>Trip goal: Suko in every round</li></ul></div>
+    <div class="sp"><h4>🎤 Hajin</h4><ul><li>Quietly charismatic — doesn't need volume</li><li>Warm and supportive, JJ beefs with her (why??)</li><li>Many friends, all taken — no 소개팅 help</li></ul></div>
+    <div class="sp"><h4>💬 Suhrin</h4><ul><li>Gossip duo with 지연 — group news network</li><li>Disappears mid-trip to fight with bf, comes back normal</li><li>Most articulate despite claiming otherwise</li></ul></div>
+    <div class="sp"><h4>🏈 Gary</h4><ul><li>Engaged to Hajin — the power couple</li><li>Will disagree with the trip plan first, then come anyway</li><li>Ex-McKinsey — brings structure nobody asked for</li></ul></div>
+  </div>
+
+  <div class="ab" style="margin-top:20px"><h3>🎯 What the Destination Needs</h3>
+    <ul><li>Close to NYC — 2-3 hours max</li><li>High energy activities AND chill zones</li><li>Secret Hitler / indoor game space</li><li>Hiking / outdoor options</li><li>Korean BBQ grilling — H-Mart run mandatory</li><li>Dog-friendly (Choco is non-negotiable)</li><li>Breakout rooms for small-group escape</li></ul>
+  </div>
+</section>
+
+<!-- REVEAL -->
+<section class="reveal" id="destination">
+  <div class="tag-line">DESTINATION</div>
+  <p style="font-size:18px;color:var(--ink-mid)">Claude recommended...</p>
+  <div class="place">The Poconos</div>
+  <p class="tagline">Big cabin. KBBQ. Secret Hitler till 3am. Lake beach + kayak with Choco by day. 2 hours from the city. Nobody voted for it but the AI was right.</p>
+  <div class="photos">
+    <div class="photo"><img src="https://images.unsplash.com/photo-1510798831971-661eb04b3739?auto=format&fit=crop&w=800&q=80" alt="Cabin" loading="lazy" onerror="this.parentElement.style.background='#1C1B19'"><div class="cap">🏡 The Cabin</div></div>
+    <div class="photo"><img src="https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?auto=format&fit=crop&w=800&q=80" alt="Lake" loading="lazy" onerror="this.parentElement.style.background='#1C1B19'"><div class="cap">🏖️ The Lake Beach</div></div>
+    <div class="photo"><img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?auto=format&fit=crop&w=800&q=80" alt="Dog" loading="lazy" onerror="this.parentElement.style.background='#1C1B19'"><div class="cap">🐕 Choco Energy</div></div>
+  </div>
+</section>
+
+<!-- THE CASE -->
+<section>
+  <div class="tag-line">THE CASE</div>
+  <h2 class="title">Why Not the <em>Ocean?</em></h2>
+
+  <div class="tradeoff">
+    <div class="ch ocean">🌊 OCEAN (Jersey Shore)</div>
+    <div class="ch lake">🏔️ POCONOS (Lake Beach)</div>
+    <div class="cell bad"><span class="lb">💰 COST</span>$600-1,200/night + 11.6% NJ tax + fees</div>
+    <div class="cell good"><span class="lb">💰 COST</span>$300-500/night (~$25-35/person)</div>
+    <div class="cell bad"><span class="lb">🐕 CHOCO</span>Most NJ beaches ban dogs in summer</div>
+    <div class="cell good"><span class="lb">🐕 CHOCO</span>Dog-friendly cabins + lake beaches</div>
+    <div class="cell bad"><span class="lb">🥩 KBBQ</span>No outdoor grill guarantee</div>
+    <div class="cell good"><span class="lb">🥩 KBBQ</span>Cabin grills are standard</div>
+    <div class="cell ok"><span class="lb">🎲 GAMES</span>Possible but cramped beach houses</div>
+    <div class="cell good"><span class="lb">🎲 GAMES</span>Big cabin = multiple game zones</div>
+    <div class="cell ok"><span class="lb">🥾 ACTIVITIES</span>Beach only — limited if rainy</div>
+    <div class="cell good"><span class="lb">🥾 ACTIVITIES</span>Hikes, lake, firepit, kayak, games</div>
+    <div class="cell bad"><span class="lb">🫧 JOAN FACTOR</span>Crowded shore towns, loud, no escape</div>
+    <div class="cell good"><span class="lb">🫧 JOAN FACTOR</span>Quiet cabin with breakout spaces</div>
+    <div class="cell good"><span class="lb">🏖️ WATER</span>Ocean waves ✓</div>
+    <div class="cell ok"><span class="lb">🏖️ WATER</span>Lake + sand + kayaks (no waves)</div>
+  </div>
+
+  <p style="text-align:center;margin:24px 0;font-size:20px;color:var(--ink-mid);font-family:'Caveat',cursive">Ocean wins on waves. Poconos wins on <em style="color:var(--claude)">everything else.</em></p>
+
+  <div class="choco">
+    <span style="font-size:48px;display:block">🐕 + 🛶</span>
+    <h3>Kayak / Canoe with Choco</h3>
+    <p>Something we've never done. Rent a canoe at the lake, bring Choco on board. Core memory incoming. Dogs are welcome at Pocono lake beaches — banned at NJ shore in summer.</p>
+    <img src="https://images.unsplash.com/photo-1472745942893-4b9f730c7668?auto=format&fit=crop&w=1000&q=80" alt="Kayak" loading="lazy" onerror="this.style.display='none'">
+  </div>
+
+  <h2 class="title" style="margin-top:48px">Why This <em>Works</em></h2>
+  <div class="reasons">
+    <div class="rc"><div class="ri">📍</div><h4>2 Hours from NYC</h4><p>Saturday morning departure, Sunday night return. No PTO needed.</p></div>
+    <div class="rc"><div class="ri">🏡</div><h4>Cabin = Breakout Spaces</h4><p>Joan gets small-group pockets. Steve gets quiet. Yosub bounces between rooms.</p><div style="margin-top:6px"><span class="pt">Joan ✓</span><span class="pt">Steve ✓</span><span class="pt">Yosub ✓</span></div></div>
+    <div class="rc"><div class="ri">🥩</div><h4>H-Mart → KBBQ</h4><p>삼겹살, 양념갈비, banchan. Outdoor grill. Steve brings snacks. 14/14.</p><div style="margin-top:6px"><span class="pt">Everyone ✓</span></div></div>
+    <div class="rc"><div class="ri">🎲</div><h4>Secret Hitler + Balance Games</h4><p>Dooksan's poker face. Suko's strategy. JJ's balance games. Steve's always fascist. 경은's comeback arc.</p><div style="margin-top:6px"><span class="pt">Dooksan ✓</span><span class="pt">Suko ✓</span><span class="pt">JJ ✓</span><span class="pt">Steve (sus) ✓</span></div></div>
+    <div class="rc"><div class="ri">🥾</div><h4>Trails + Firepit + Choco</h4><p>지연 runs infinite cardio. Gary forces a morning run. Suko gets long walks. Firepit for 1am banter. Choco is non-negotiable.</p><div style="margin-top:6px"><span class="pt">지연 ✓</span><span class="pt">Gary ✓</span><span class="pt">Austin + Choco ✓</span><span class="pt">Suko ✓</span></div></div>
+    <div class="rc"><div class="ri">🏖️</div><h4>Lake Beach + Kayak with Choco</h4><p>150 lakes. Free at state parks. Kayaks, canoes. Bring Choco on the canoe. New core memory.</p><div style="margin-top:6px"><span class="pt">New Activity ✓</span><span class="pt">Free ✓</span></div></div>
+    <div class="rc"><div class="ri">🔁</div><h4>Round 2 — Proven Formula</h4><p>We've been before. It worked. $300-500/night split 14 ways = ~$25-35/person. Different cabin, same energy, new memories.</p><div style="margin-top:6px"><span class="pt">Proven ✓</span><span class="pt">Budget ✓</span></div></div>
+  </div>
+</section>
+
+<!-- CLOSING -->
+<section class="closing">
+  <div class="tag-line">THE MOVE (THAT NOBODY VOTED FOR)</div>
+  <h2 class="title" style="max-width:680px;text-align:center">
+    H-Mart → 2hr Drive → Cabin → KBBQ → Secret Hitler → Lake Beach → Firepit → <em>Round 2.</em>
+  </h2>
+  <p style="color:var(--ink-mid);max-width:480px;margin-top:16px;font-size:14px;text-align:center">
+    This presentation won Best Presentation (the most meaningless award). Nobody wanted to go to the Poconos. This page self-destructs at midnight tonight. Screenshot your archetype or lose it forever.
+  </p>
+  <p style="margin-top:20px;font-size:24px;color:var(--claude);font-family:'Caveat',cursive">
+    "Aite claude it's time to cook" — Austin, 2026
+  </p>
+</section>
+
+<footer>
+  <span style="color:var(--claude);font-family:'JetBrains Mono',monospace;font-size:11px">✦ Built with Claude</span><br>
+  <span style="margin-top:8px;display:inline-block">No PowerPoints were harmed. No destinations were chosen.</span>
+</footer>
+
+</body>
+</html>
